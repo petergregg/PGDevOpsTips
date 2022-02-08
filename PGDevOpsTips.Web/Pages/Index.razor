@@ -1,0 +1,31 @@
+﻿@page "/"
+@using PGDevOpsTips.Web.Models
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+<div class="jumbotron jumbotron-home-header">
+    <div class="container">
+        <h1>Hi, I am @Configuration["Personalise:Name"]</h1>
+        <p>I am a lead software architect and an advocate of clean architecture/code</p>
+        <p class="d-none d-sm-block">@Configuration["Personalise:Slogan"]</p>
+        <p class="d-none d-sm-block">I am based in @Configuration["Personalise:Location"]</p>
+    </div>
+</div>
+
+<div class="container-fluid list-item-background-1">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <h2>
+                    <a href="articles">Articles</a>
+                </h2>
+                <p>A place where I share topics in blog articles about technical things I have found useful and hope you will too.</p>
+                <p>Everytime I learn something new, I will share it here.</p>
+                <a class="btn btn-light" href="articles">Learn more <i class="fa fa-angle-double-right" aria-hidden="true"></i></a>
+            </div>
+            <div class="col-md-4">
+                <img src="/images/computersourcecode.jpg" class="img-fluid d-none d-lg-block" alt="Picture of articles">
+            </div>
+        </div>
+    </div>
+</div>

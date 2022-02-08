@@ -1,0 +1,8 @@
+PGDevOpsTips
+Copyright 2022 Peter Gregg
+
+The Initial Developer of some parts of the project, which are copied from, derived from, or
+inspired by is Martin Kearn (https://github.com/martinkearn/MartinK-Me).
+
+The Initial Developer of the PGDevOpsTips.Web/Shared/NavMenu.razor, and nav styles in 
+PGDevOpsTips.Web/wwwroot/css/app.css and PGDevOpsTips.Web/wwwroot/css/pg.css, is Robin Clark (https://github.com/robalexclark/BlazorTopMenu)

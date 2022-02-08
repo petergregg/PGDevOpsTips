@@ -1,0 +1,111 @@
+﻿@page "/resources"
+@page "/resources/drafts/{Drafts:bool?}"
+@using Models
+@using Microsoft.Extensions.Configuration
+@using Services
+@using System.Threading
+@implements IDisposable
+@inject IConfiguration Configuration
+@inject ContentService ContentService
+@inject NavigationManager NavigationManager
+
+
+<div class="jumbotron jumbotron-resources-header">
+    <div class="container">
+        <h1>Resources</h1>
+            <p>A place where I share topics in blog resources about technical things I have found useful and hope you will too. Everytime I learn something new, I will share it here.</p>
+            <p>All my resources are written on 
+            <a href="@Configuration["Content:GithubContentRepoResources"]" target="_blank">
+                <i class="fab fa-github fa-lg" aria-hidden="true"></i> GitHub</a>. You can raise issues, create pull requests or even fork the content... its open source.</p>
+            <p>By default, you'll only see published resources, but you can <a href="/resources/drafts/true">enable drafts</a>.</p>
+    </div>
+</div>
+
+@if (!resourcesViewModel.Resources.Any())
+{
+    <div class="container">
+         <div class="row">
+            <div class="col-md-12">
+                <p><em>Loading...</em></p>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+
+    var backgroundCount = 1;
+
+    foreach(var resource in resourcesViewModel.Resources)
+    {
+        <div class="container-fluid list-item-background-@backgroundCount">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2><a href="/resource/@resource.WebPath.ToLower()" title="@resource.Description" >@resource.Title</a></h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                           <p>@resource.Published.ToString("dd MMM yyyy")</p>
+                            <p><small>
+                            @foreach (var cat in resource.Categories)
+                            {
+                               <span><a href="/tags/@cat.ToString()">#@cat</a> </span>
+                            }
+                        </small></p>
+                        <p>@resource.Description</p>
+                        <p><a href="/resource/@resource.WebPath.ToLower()" title="@resource.Description" class="btn btn-light">Read now <i class="fas fa-angle-double-right" aria-hidden="true"></i></a></p>
+                    </div>
+                    <div class="col-md-4 d-none d-lg-block">
+                         <img src="@resource.Thumbnail" class="img-fluid list-item-thumbnail" alt="@resource.Title">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {
+            backgroundCount = backgroundCount + 1;
+        }
+    }
+}
+
+@code {
+
+    [Parameter]
+    public bool Drafts { get; set; }
+
+    ResourcesViewModel resourcesViewModel;
+    List<Content> allResources;
+
+    private CancellationTokenSource cts = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        resourcesViewModel = new ResourcesViewModel();
+        resourcesViewModel.Resources = new List<Models.Content>();
+        allResources = await ContentService.GetContents(Configuration["Content:ResourcesContentsApiPath"], cts.Token);   
+        
+        GetRouteValuesAndUpdateResources();
+
+        NavigationManager.LocationChanged += HandleLocationChanged;
+    }
+     
+    void HandleLocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        GetRouteValuesAndUpdateResources();
+        StateHasChanged();
+    }
+
+    void GetRouteValuesAndUpdateResources()
+    {
+        resourcesViewModel.Resources = Drafts ? allResources : allResources.Where(o => o.Status == ContentStatus.Published).ToList();
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= HandleLocationChanged;
+        cts.Cancel();
+        cts.Dispose();
+    }
+}

@@ -1,0 +1,111 @@
+﻿@page "/articles"
+@page "/articles/drafts/{Drafts:bool?}"
+@using Models
+@using Microsoft.Extensions.Configuration
+@using Services
+@using System.Threading
+@implements IDisposable
+@inject IConfiguration Configuration
+@inject ContentService ContentService
+@inject NavigationManager NavigationManager
+
+
+<div class="jumbotron jumbotron-articles-header">
+    <div class="container">
+        <h1>Articles</h1>
+            <p>A place where I share topics in blog articles about technical things I have found useful and hope you will too. Everytime I learn something new, I will share it here.</p>
+            <p>All my articles are written on 
+            <a href="@Configuration["Content:GithubContentRepoArticles"]" target="_blank">
+                <i class="fab fa-github fa-lg" aria-hidden="true"></i> GitHub</a>. You can raise issues, create pull requests or even fork the content... its open source.</p>
+            <p>By default, you'll only see published articles, but you can <a href="/articles/drafts/true">enable drafts</a>.</p>
+    </div>
+</div>
+
+@if (!articlesViewModel.Articles.Any())
+{
+    <div class="container">
+         <div class="row">
+            <div class="col-md-12">
+                <p><em>Loading...</em></p>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+
+    var backgroundCount = 1;
+
+    foreach(var article in articlesViewModel.Articles)
+    {
+        <div class="container-fluid list-item-background-@backgroundCount">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2><a href="/article/@article.WebPath.ToLower()" title="@article.Description" >@article.Title</a></h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                           <p>@article.Published.ToString("dd MMM yyyy")</p>
+                            <p><small>
+                            @foreach (var cat in article.Categories)
+                            {
+                               <span><a href="/tags/@cat.ToString()">#@cat</a> </span>
+                            }
+                        </small></p>
+                        <p>@article.Description</p>
+                        <p><a href="/article/@article.WebPath.ToLower()" title="@article.Description" class="btn btn-light">Read now <i class="fas fa-angle-double-right" aria-hidden="true"></i></a></p>
+                    </div>
+                    <div class="col-md-4 d-none d-lg-block">
+                         <img src="@article.Thumbnail" class="img-fluid list-item-thumbnail" alt="@article.Title">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {
+            backgroundCount = backgroundCount + 1;
+        }
+    }
+}
+
+@code {
+
+    [Parameter]
+    public bool Drafts { get; set; }
+
+    ArticlesViewModel articlesViewModel;
+    List<Content> allArticles;
+
+    private CancellationTokenSource cts = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        articlesViewModel = new ArticlesViewModel();
+        articlesViewModel.Articles = new List<Models.Content>();
+        allArticles = await ContentService.GetContents(Configuration["Content:ArticlesContentsApiPath"], cts.Token);   
+        
+        GetRouteValuesAndUpdateArticles();
+
+        NavigationManager.LocationChanged += HandleLocationChanged;
+    }
+     
+    void HandleLocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        GetRouteValuesAndUpdateArticles();
+        StateHasChanged();
+    }
+
+    void GetRouteValuesAndUpdateArticles()
+    {
+        articlesViewModel.Articles = Drafts ? allArticles : allArticles.Where(o => o.Status == ContentStatus.Published).ToList();
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= HandleLocationChanged;
+        cts.Cancel();
+        cts.Dispose();
+    }
+}

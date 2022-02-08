@@ -1,0 +1,115 @@
+﻿@page "/resource/{ResourceWebPath}"
+@using Microsoft.Extensions.Configuration
+@using Services
+@using PGDevOpsTips.Web.Models
+@using System.Threading
+@implements IDisposable
+@inject IConfiguration Configuration
+@inject ContentService ContentService
+
+<style>
+    body {
+        background-color: white;
+    }
+</style>
+
+@if(loading)
+{
+    <div class="container content-container">
+         <div class="row">
+            <div class="col-md-12">
+                <p><em>Loading</em></p>
+            </div>
+        </div>
+    </div>
+}
+else if (resourceViewModel.Resource == null || html == null)
+{
+    <div class="container content-container">
+         <div class="row">
+            <div class="col-md-12">
+                <p>The resource you have tried to load doesn't exist, check out my other <a href="/resources">Resources</a></p>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="jumbotron jumbotron-resource-header">
+        <div class="container">
+            <h1>@resourceViewModel.Resource.Title</h1>
+            <p>@resourceViewModel.Resource.Description</p>
+            <p>
+                @foreach (var cat in resourceViewModel.Resource.Categories)
+                {
+                    <span class="badge badge-primary"><a href="/tags/@cat.ToLower()">#@cat</a> </span>
+                }
+            </p>
+            <p><small>@resourceViewModel.Resource.Published.ToString("dddd dd MMM yyyy")</small></p>
+            <p><small>This resource was written on <a href=@($"{@Configuration["Content:GitHubContentRepo"]}{@resourceViewModel.Resource.GitHubPath}") target="_blank">
+                <i class="fab fa-github fa-lg" aria-hidden="true"></i> GitHub</a>. You can raise issues, create pull requests or even fork the content... its open source</small></p>
+        </div>
+    </div>
+
+    <div class="container content-container">
+        @((MarkupString)@html)
+    </div>
+
+    <div class="container-fluid">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <a href="resources" class="btn btn-primary"><i class="fas fa-angle-double-left" aria-hidden="true"></i> See all resources</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid list-item-background-1">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>Got a comment?</h2>
+                    <p>All my resources are written and managed as Markdown files on <a href=@($"{@Configuration["Content:GitHubContentRepo"]}{@resourceViewModel.Resource.GitHubPath}") target="_blank"><i class="fab fa-github fa-lg" aria-hidden="true"></i> GitHub</a>.</p>    
+                    <p>Please add an issue or submit a pull request if something is not right on this resource or you have a comment.</p>
+                    <p>If you'd like to simply say "thanks", then please send me a <a href="@Configuration["Personalise:TwitterUrl"]" target="_blank"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a> so the rest of Twitter can see how awesome my work is.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public string ResourceWebPath { get; set; }
+
+    private string html;
+
+    private bool loading;
+
+    ResourceViewModel resourceViewModel { get; set; } = new ResourceViewModel();
+
+    private CancellationTokenSource cts = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        resourceViewModel.Resource = new Models.Content();
+        resourceViewModel.Resource.Categories = new List<string>();
+        
+        loading = true;
+        resourceViewModel.Resource = await ContentService.GetContent(Configuration["Content:ResourcesContentsApiPath"], ResourceWebPath, cts.Token);
+        loading = false;
+
+        if (resourceViewModel.Resource != null)
+        {
+            html = resourceViewModel.Resource.Html;
+        }
+    }
+
+    public void Dispose()
+    {
+        cts.Cancel();
+        cts.Dispose();
+    }
+}

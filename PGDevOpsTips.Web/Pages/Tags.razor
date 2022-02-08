@@ -1,0 +1,86 @@
+﻿@page "/tags/{tagName}"
+@using Microsoft.Extensions.Configuration
+@using Services
+@using System.Threading
+@inject IConfiguration Configuration
+@inject ContentService ContentService
+
+
+@if (!tagViewModel.Contents.Any())
+{
+    <div class="container">
+         <div class="row">
+            <div class="col-md-12">
+                <p><em>Loading...</em></p>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="jumbotron jumbotron-tags-header">
+        <div class="container">
+            <h1>@tagViewModel.Tag</h1>
+            <p>Everything I have about @tagViewModel.Tag</p>
+        </div>
+    </div>
+
+    var backgroundCount = 1;
+    
+    foreach(var content in tagViewModel.Contents)
+    {
+        <div class="container-fluid list-item-background-@backgroundCount">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2><a href="/@content.Type.ToString()/@content.WebPath.ToLower()" title="@content.Description">@content.Title</a></h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                           <p>@content.Published.ToString("dd MMM yyyy")</p>
+                            <p><small>
+                            @foreach (var cat in content.Categories)
+                            {
+                               <span><a href="/tags/@cat.ToString()">#@cat</a> </span>
+                            }
+                        </small></p>
+                        <p>@content.Description</p>
+                        <p><a href="/@content.Type.ToString()/@content.WebPath.ToLower()" title="@content.Description" class="btn btn-light">Read now <i class="fas fa-angle-double-right" aria-hidden="true"></i></a></p>
+                    </div>
+                    <div class="col-md-4 d-none d-sm-block">
+                         <img src="@content.Thumbnail" class="img-fluid list-item-thumbnail" alt="@content.Title">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {
+            backgroundCount = backgroundCount + 1;
+        }
+    }
+}
+
+@code {
+
+    [Parameter]
+    public string TagName { get; set; }
+
+    private CancellationTokenSource cts = new();
+
+    TagViewModel tagViewModel;
+
+        protected override async Task OnInitializedAsync()
+    {
+        tagViewModel = new TagViewModel();
+        tagViewModel.Tag = TagName;
+        tagViewModel.Contents = new List<Models.Content>();       
+        tagViewModel.Contents = await ContentService.GetContentsByTag(Configuration["Content:BlogContentsApiPath"], TagName, cts.Token);
+    }
+
+    public void Dispose()
+    {
+        cts.Cancel();
+        cts.Dispose();
+    }
+}
