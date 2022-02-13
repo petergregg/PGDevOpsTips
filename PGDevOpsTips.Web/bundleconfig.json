@@ -4,7 +4,6 @@
     // An array of relative input file paths. Globbing patterns supported
     "inputFiles": [
       "wwwroot/css/bootstrap/bootstrap.min.css",
-      //"wwwroot/css/open-iconic/font/css/open-iconic-bootstrap.min.css",
       "wwwroot/font-awesome/css/all.min.css",
       "wwwroot/css/pgdevopstips/components/_button.css",
       "wwwroot/css/pgdevopstips/components/_list.css",
