@@ -21,7 +21,7 @@ jobs:
     
     # Allow files and folders starting with an underscore
     - name: Add .nojekyll file
-      run: touch release/wwwroot/.nojekyll
+      run: touch PGDevOpsTips.Web/bin/Release/net5.0/publish/wwwroot/.nojekyll
     
     - name: GitHub Pages
       if: success()
