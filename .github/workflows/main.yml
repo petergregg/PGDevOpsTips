@@ -15,11 +15,9 @@ jobs:
     - name: Publish app
       run: dotnet publish -c Release
       
-    - name: Rewrite base href
-      uses: SteveSandersonMS/ghaction-rewrite-base-href@v1
-      with:
-        html_path: ${{ env.PUBLISH_DIR }}/index.html
-        base_href: /PGDevOpsTips/
+    # changes the base-tag in index.html from '/' to 'PGDevOpsTips' to match GitHub Pages repository subdirectory
+    - name: Change base-tag in index.html from / to PGDevOpsTips
+      run: sed -i 's/<base href="\/" \/>/<base href="\/PGDevOpsTips\/" \/>/g' ${{ env.PUBLISH_DIR }}
     
     - name: GitHub Pages
       if: success()
