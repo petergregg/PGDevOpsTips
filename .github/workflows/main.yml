@@ -1,6 +1,6 @@
 name: Deploy to GitHub Pages
 env:
-    PUBLISH_DIR: PGDevOpsTips.Web/bin/Release/net5.0/publish/root
+    PUBLISH_DIR: PGDevOpsTips.Web/bin/Release/net5.0/publish/wwwroot
 
 on:
   push:
