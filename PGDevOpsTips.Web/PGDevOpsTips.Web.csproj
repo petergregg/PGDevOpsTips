@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\CNAME" />
+    <Content Include="CNAME" />
   </ItemGroup>
 
   <ItemGroup>
