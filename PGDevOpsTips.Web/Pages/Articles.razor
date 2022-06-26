@@ -51,7 +51,7 @@ else
                             <p><small>
                             @foreach (var cat in article.Categories)
                             {
-                               <span><a href="/tags/@cat.ToString()">#@cat</a> </span>
+                               <span><a href="/tags/@cat.ToLower()">#@cat</a> </span>
                             }
                         </small></p>
                         <p>@article.Description</p>
