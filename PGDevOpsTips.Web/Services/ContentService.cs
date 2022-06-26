@@ -116,7 +116,7 @@ namespace PGDevOpsTips.Web.Services
 
             var contentsInTag = new List<Content>();
 
-            foreach (var contentParent in contentParents)
+            foreach (var contentParent in contentParents.Where(x => !x.GitHubPath.Contains("Images")))
             {
                 var allContents = await GetContents(contentParent.GitHubPath, cancellationToken).ConfigureAwait(false);
 
@@ -127,7 +127,8 @@ namespace PGDevOpsTips.Web.Services
                 {
                     foreach (var cat in content.Categories)
                     {
-                        if (cat.ToLowerInvariant() == tag.ToLowerInvariant()) contentsInTag.Add(content);
+                        if (cat.ToLowerInvariant() == tag.ToLowerInvariant())
+                            contentsInTag.Add(content);
                     }
                 }
             }
