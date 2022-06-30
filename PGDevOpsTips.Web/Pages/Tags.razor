@@ -1,9 +1,11 @@
 ﻿@page "/tags/{tagName}"
+@using Models
 @using Microsoft.Extensions.Configuration
 @using Services
 @using System.Threading
 @inject IConfiguration Configuration
 @inject ContentService ContentService
+@inject NavigationManager NavigationManager
 
 
 @if (!tagViewModel.Contents.Any())
@@ -70,16 +72,35 @@ else
 
     TagViewModel tagViewModel;
 
-        protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         tagViewModel = new TagViewModel();
         tagViewModel.Tag = TagName;
-        tagViewModel.Contents = new List<Models.Content>();       
-        tagViewModel.Contents = await ContentService.GetContentsByTag(Configuration["Content:BlogContentsApiPath"], TagName, cts.Token);
+        tagViewModel.Contents = new List<Content>();       
+        
+        await GetRouteValuesAndUpdateTaggedContents(cts.Token);
+
+        NavigationManager.LocationChanged += HandleLocationChanged;
+    }
+
+    void HandleLocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        base.InvokeAsync(async () =>
+        {
+            await GetRouteValuesAndUpdateTaggedContents(cts.Token);
+            StateHasChanged();
+        });
+
+    }
+
+    async Task GetRouteValuesAndUpdateTaggedContents(CancellationToken cts)
+    {
+        tagViewModel.Contents = await ContentService.GetContentsByTag(Configuration["Content:BlogContentsApiPath"], TagName, cts);
     }
 
     public void Dispose()
     {
+        NavigationManager.LocationChanged -= HandleLocationChanged;
         cts.Cancel();
         cts.Dispose();
     }
