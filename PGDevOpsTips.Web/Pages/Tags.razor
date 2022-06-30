@@ -75,7 +75,6 @@ else
     protected override async Task OnInitializedAsync()
     {
         tagViewModel = new TagViewModel();
-        tagViewModel.Tag = TagName;
         tagViewModel.Contents = new List<Content>();       
         
         await GetRouteValuesAndUpdateTaggedContents(cts.Token);
@@ -95,6 +94,7 @@ else
 
     async Task GetRouteValuesAndUpdateTaggedContents(CancellationToken cts)
     {
+        tagViewModel.Tag = TagName;
         tagViewModel.Contents = await ContentService.GetContentsByTag(Configuration["Content:BlogContentsApiPath"], TagName, cts);
     }
 
