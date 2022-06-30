@@ -1,0 +1,108 @@
+﻿/*!
+ * PGDevOpsTips
+ * Copyright 2022 Peter Gregg
+ * Licensed under the Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0)
+*/
+html {
+    position: relative;
+    min-height: 100%;
+    font-family: Roboto,Trebuchet MS,Helvetica,Arial,sans-serif;
+    font-size: 16px;
+    font-weight: 100;
+}
+
+body {
+    padding-top: 55px;
+    font-family: Roboto,Trebuchet MS,Helvetica,Arial,sans-serif;
+    font-size: 16px;
+    font-weight: 100;
+    background-color: #002050;
+    color: #ffffff;
+    margin-bottom: 110px;
+    height: 100%;
+}
+
+h4 {
+    font-size: 16pt;
+}
+
+a {
+    color: #ffffff;
+}
+
+    a:hover {
+        text-decoration: underline;
+        color: #ffffff;
+    }
+
+.nav-item {
+    padding-bottom: 0px !important;
+}
+
+    .nav-item:first-of-type {
+        padding-top: 0px !important;
+    }
+
+    .nav-item:last-of-type {
+        padding-bottom: 0px !important;
+    }
+
+    /*Added from https://github.com/robalexclark/BlazorTopMenu/blob/master/Blazor-Top-Menu/wwwroot/css/site.css*/
+    .nav-item a {
+        color: #d7d7d7;
+        border-radius: 4px;
+        height: 3rem;
+        display: flex;
+        align-items: center;
+        line-height: 3rem;
+    }
+
+    .nav-item a.active {
+        color: white;
+    }
+
+    .nav-item a:hover, .nav-item a:focus {
+        background-color: #000 !important;
+    }
+
+.navbar-toggler {
+    color: #fff !important;
+}
+
+@media (min-width: 768px) {
+
+    .navbar-toggler {
+        display: none;
+    }
+}
+
+/*Added from https://github.com/robalexclark/BlazorTopMenu/blob/master/Blazor-Top-Menu/wwwroot/css/site.css*/
+
+.bg-dark {
+    background-color: #000 !important;
+}
+
+.navbar-dark .navbar-nav > li > a {
+    text-decoration: none;
+}
+
+.navbar-dark .navbar-nav > li > a:focus, .navbar-dark .navbar-nav > li > a:hover {
+    color: #B4009E !important;
+}
+
+.navbar, .navbar-brand, .nav-item {
+    font-family: RobotoCondensed Bold,Trebuchet MS,Helvetica,Arial,sans-serif !important;
+    font-size: 18px !important;
+    font-weight: 400 !important;
+    text-transform: uppercase;
+}
+
+.navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
+    text-decoration: none;
+    color: #9d9d9d !important;
+}
+
+.navbar-dark .navbar-brand:focus, .navbar-dark .navbar-brand:hover {
+    color: #fff !important;
+}
+
