@@ -18,6 +18,8 @@ namespace PGDevOpsTips.Web.Services
             // Trim leading <H1> ... Bit hacky as it assumes that the H1 is the first line of html
             var htmlNoH1 = html.Substring(html.IndexOf("</h1>") + 5);
 
+            htmlNoH1 = htmlNoH1.Replace("<table", "<table class='table'");
+
             // Return
             return htmlNoH1;
         }
