@@ -25,6 +25,7 @@
 
     .content-container h1, .content-container h2, .content-container h3, .content-container h4, .content-container h5, .content-container h6 {
         color: #24292e;
+        font-weight: bold;
     }
 
     .content-container img {
