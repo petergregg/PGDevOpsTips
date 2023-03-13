@@ -15,15 +15,15 @@ jobs:
     - name: Publish app
       run: dotnet publish -c Release PGDevOpsTips.Web
       
-    # Changes the base-tag in index.html from '/' to 'PGDevOpsTips' to match GitHub Pages repository subdirectory 
-    #- name: Change base-tag in index.html from / to PGDevOpsTips
-      #run: sed -i 's/<base href="\/" \/>/<base href="\/PGDevOpsTips.Web\/" \/>/g' PGDevOpsTips.Web/bin/Release/net5.0/publish/wwwroot/index.html
+    # Changes the base-tag in index.html from '/' to 'PGDevOpsTips' to match GitHub Pages repository subdirectory
+    - name: Change base-tag in index.html from / to PGDevOpsTips
+      run: sed -i 's/<base href="\/" \/>/<base href="\/PGDevOpsTips\/" \/>/g' PGDevOpsTips.Web/bin/Release/net5.0/publish/wwwroot/index.html
     
-    - name: Rewrite base href
-      uses: SteveSandersonMS/ghaction-rewrite-base-href@v1
-      with:
-        html_path: ${{ env.PUBLISH_DIR }}/index.html
-        base_href: /PGDevOpsTips/
+    #- name: Rewrite base href
+      #uses: SteveSandersonMS/ghaction-rewrite-base-href@v1
+      #with:
+       # html_path: ${{ env.PUBLISH_DIR }}/index.html
+        #base_href: /PGDevOpsTips/
     
     # Allow files and folders starting with an underscore
     - name: Add .nojekyll file
