@@ -99,7 +99,7 @@ else
 
     void GetRouteValuesAndUpdateArticles()
     {
-        articlesViewModel.Articles = Drafts ? allArticles : allArticles.Where(o => o.Status == ContentStatus.Published).ToList();
+        articlesViewModel.Articles = Drafts ? allArticles : allArticles.Where(o => o.Status == ContentStatus.Published).OrderByDescending(d => d.Published).ToList();
     }
 
     public void Dispose()
