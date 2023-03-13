@@ -16,8 +16,8 @@ jobs:
       run: dotnet publish -c Release
       
     # Changes the base-tag in index.html from '/' to 'PGDevOpsTips' to match GitHub Pages repository subdirectory
-    #- name: Change base-tag in index.html from / to PGDevOpsTips
-      #run: sed -i 's/<base href="\/" \/>/<base href="\/PGDevOpsTips\/" \/>/g' PGDevOpsTips.Web/bin/Release/net5.0/publish/wwwroot/index.html
+    - name: Change base-tag in index.html from / to PGDevOpsTips
+      run: sed -i 's/<base href="\/" \/>/<base href="\/PGDevOpsTips\/PGDevOpsTips.Web\/" \/>/g' PGDevOpsTips.Web/bin/Release/net5.0/publish/wwwroot/index.html
     
     # Allow files and folders starting with an underscore
     - name: Add .nojekyll file
