@@ -13,7 +13,7 @@ jobs:
     - uses: actions/checkout@v2
     
     - name: Publish app
-      run: dotnet publish -c Release PGDevOpsTips.Web
+      run: dotnet publish -c Release
       
     # Changes the base-tag in index.html from '/' to 'PGDevOpsTips' to match GitHub Pages repository subdirectory
     #- name: Change base-tag in index.html from / to PGDevOpsTips
