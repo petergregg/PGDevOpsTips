@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PGDevOpsTips.Web.Interfaces;
 using PGDevOpsTips.Web.Services;
@@ -15,21 +16,26 @@ namespace PGDevOpsTips.Web
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            ConfigureServices(builder.Services, builder.HostEnvironment.BaseAddress, builder.Configuration);
 
-            builder.Services.AddSingleton<IMarkdownService, MarkdownService>();
-            builder.Services.AddSingleton<IYamlService, YamlService>();
+            await builder.Build().RunAsync();
+        }
 
-            builder.Services.AddHttpClient<ContentService>("github", client =>
+        private static void ConfigureServices(IServiceCollection services, string baseAddress, IConfiguration configuration)
+        {
+            services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseAddress) });
+
+            services.AddSingleton<IMarkdownService, MarkdownService>();
+            services.AddSingleton<IYamlService, YamlService>();
+
+            services.AddHttpClient<ContentService>("github", client =>
             {
-                client.BaseAddress = new Uri(builder.Configuration["GitHubAPI"]);
+                client.BaseAddress = new Uri(configuration["GitHubAPI"]);
                 // Github API versioning
                 client.DefaultRequestHeaders.Add("Accept", "application/vnd.github.v3+json");
                 // Github requires a user-agent
                 client.DefaultRequestHeaders.Add("User-Agent", "PGDevOpsTips.Web");
             });
-
-            await builder.Build().RunAsync();
         }
     }
 }
