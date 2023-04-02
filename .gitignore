@@ -364,3 +364,5 @@ FodyWeavers.xsd
 
 # Don't include bundled files in git
 **/wwwroot/bundles
+
+Prerender/output
