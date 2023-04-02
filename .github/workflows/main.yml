@@ -25,7 +25,7 @@ jobs:
     - name: Change base tag
       working-directory: Prerender/output/wwwroot
       run: |
-        find . -name "*.html" | while read htmlFile; do
+        find ./output -name "*.html" | while read htmlFile; do
             sed -i 's/<script type="text\/javascript">var Module; window.__wasmmodulecallback__(); delete window.__wasmmodulecallback__;<\/script><script src="_framework\/dotnet.6.0.14.0ast7wow15.js" defer="" integrity="sha256-54cJ6JdGhGbKaLWxHfRYzYbuyRq2wlK\/ZDzfSXD3FEs=" crossorigin="anonymous"><\/script>//g' $htmlFile
         done
 
