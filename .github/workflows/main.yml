@@ -1,4 +1,6 @@
 name: Deploy to GitHub Pages
+env:
+    PUBLISH_DIR: PGDevOpsTips.Web/bin/Release/net6.0/publish/wwwroot
 
 on:
   push:
@@ -9,36 +11,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-  
-    - name: Setup .NET Core SDK
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 6.0.114
     
     - name: Publish app
-      run: dotnet publish PGDevOpsTips.Web/PGDevOpsTips.Web.csproj -c Release -o Prerender/output --nologo
-     
-    - name: prerender Blazor client
-      working-directory: Prerender
-      run: npx react-snap
+      run: dotnet publish -c Release
+      
+    # Changes the base-tag in index.html from '/' to 'PGDevOpsTips' to match GitHub Pages repository subdirectory
+    #- name: Change base-tag in index.html from / to PGDevOpsTips
+      #run: sed -i 's/<base href="\/" \/>/<base href="\/PGDevOpsTips\/" \/>/g' PGDevOpsTips.Web/bin/Release/net5.0/publish/wwwroot/index.html
     
-    - name: Change base tag
-      working-directory: Prerender/output/wwwroot
-      run: |
-        find ./output -name "*.html" | while read htmlFile; do
-            sed -i 's/<script type="text\/javascript">var Module; window.__wasmmodulecallback__(); delete window.__wasmmodulecallback__;<\/script><script src="_framework\/dotnet.6.0.14.0ast7wow15.js" defer="" integrity="sha256-54cJ6JdGhGbKaLWxHfRYzYbuyRq2wlK\/ZDzfSXD3FEs=" crossorigin="anonymous"><\/script>//g' $htmlFile
-        done
-
+    #- name: Rewrite base href
+      #uses: SteveSandersonMS/ghaction-rewrite-base-href@v1
+      #with:
+        #html_path: ${{ env.PUBLISH_DIR }}/index.html
+        #base_href: /PGDevOpsTips/
+    
     # Allow files and folders starting with an underscore
     - name: Add .nojekyll file
-      run: touch Prerender/output/wwwroot/.nojekyll
+      run: touch PGDevOpsTips.Web/bin/Release/net6.0/publish/wwwroot/.nojekyll
     
     - name: GitHub Pages
       if: success()
       uses: crazy-max/ghaction-github-pages@v1.5.1
       with:
         target_branch: gh-pages
-        FOLDER: Prerender/output/wwwroot
+        build_dir: ${{ env.PUBLISH_DIR }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   
     
