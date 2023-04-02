@@ -16,14 +16,14 @@ namespace PGDevOpsTips.Web
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            ConfigureServices(builder.Services, builder.HostEnvironment.BaseAddress, builder.Configuration);
+            ConfigureServices(builder.Services, builder.HostEnvironment, builder.Configuration);
 
             await builder.Build().RunAsync();
         }
 
-        private static void ConfigureServices(IServiceCollection services, string baseAddress, IConfiguration configuration)
+        private static void ConfigureServices(IServiceCollection services, IWebAssemblyHostEnvironment hostEnvironment, IConfiguration configuration)
         {
-            services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseAddress) });
+            services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(hostEnvironment.BaseAddress) });
 
             services.AddSingleton<IMarkdownService, MarkdownService>();
             services.AddSingleton<IYamlService, YamlService>();
