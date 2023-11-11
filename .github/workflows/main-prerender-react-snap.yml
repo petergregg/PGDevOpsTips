@@ -17,7 +17,7 @@ jobs:
     
     # Allow files and folders starting with an underscore
     - name: Add .nojekyll file
-      run: touch PGDevOpsTips.Web/bin/Release/net6.0/publish/wwwroot/.nojekyll
+      run: touch Prerender/output/wwwroot/.nojekyll
     
     # Use NodeJS react-snap utitility to prerender static website
     - name: prerender Blazor client
