@@ -15,10 +15,6 @@ jobs:
     - name: Publish app
       run: dotnet publish PGDevOpsTips.Web/PGDevOpsTips.Web.csproj -c Release -o Prerender/output --nologo
     
-    # Allow files and folders starting with an underscore
-    - name: Add .nojekyll file
-      run: touch Prerender/output/wwwroot/.nojekyll
-    
     # Use NodeJS react-snap utitility to prerender static website
     - name: prerender Blazor client
       working-directory: Prerender
@@ -32,6 +28,10 @@ jobs:
             #sed -i 's/<base href="\/"/<base href="\/PGDevOpsTips\/"/g' $htmlFile
             sed -i 's/<script type="text\/javascript">var Module; window.__wasmmodulecallback__(); delete window.__wasmmodulecallback__;<\/script><script src="_framework\/dotnet.6.0.24.t14qolxptp.js" defer="" integrity="sha256-0zvLbm2N57A5LNSoUWIIMXXq7ldIwes8W5WY9\/G84GE=" crossorigin="anonymous"><\/script>//g' $htmlFile
         done
+
+    # Allow files and folders starting with an underscore
+    - name: Add .nojekyll file
+      run: touch Prerender/output/wwwroot/.nojekyll
 
     - name: GitHub Pages
       if: success()
