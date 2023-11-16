@@ -22,7 +22,7 @@ namespace PGDevOpsTips.Workflow.Services
             // Make request to Github
             var client = _clientFactory.CreateClient();
             client.BaseAddress = new Uri(fileApiUrl);
-            client.DefaultRequestHeaders.Add("User-Agent", "Martink.me - GetFileContentsActivity");
+            client.DefaultRequestHeaders.Add("User-Agent", "PGDevOpsTips - GetFileContentsActivity");
             var response = await client.GetAsync(fileApiUrl);
             response.EnsureSuccessStatusCode();
 
