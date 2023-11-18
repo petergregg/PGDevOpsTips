@@ -28,7 +28,7 @@ namespace PGDevOpsTips.Workflow.API
 
             string responseMessage = string.IsNullOrEmpty(blobName) 
                 ? "Pass a blobname in the query string"
-                : _storageService.GetBlobContent(blobName).ToString();
+                : await _storageService.GetBlobContent(blobName);
 
             return new OkObjectResult(responseMessage);
         }
