@@ -75,12 +75,21 @@ namespace PGDevOpsTips.Domain.Interfaces
         public List<Content> QueryContents(string filter, bool includeDrafts, int? take);
 
         /// <summary>
-        /// Helper method which constructs an OData query and gets a list of Contentss which match
+        /// Helper method which constructs an OData query and gets a list of Contents which match
         /// </summary>
-        /// <param name="property">The property (key) to match the AtyicleEntity on.</param>
-        /// <param name="property">The value to match the AtyicleEntity on.</param>
+        /// <param name="property">The property (key) to match the ContentEntity on.</param>
+        /// <param name="property">The value to match the ContentEntity on.</param>
         /// <returns>Content</returns>
         public List<Content> GetContentsByProperty(string property, string value);
+
+        /// <summary>
+        /// Helper method which constructs an OData query and gets Content which match
+        /// </summary>
+        /// <param name="type">The Content Type to match the ContentEntity on.</param>
+        /// <param name="property">The property (key) to match the ContentEntity on.</param>
+        /// <param name="value">The value to match the ContentEntity on.</param>
+        /// <returns></returns>
+        Content GetContentByProperty(string type, string property, string value);
 
         /// <summary>
         /// Returns list of urls for each blob in wallpapers container

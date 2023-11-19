@@ -144,6 +144,7 @@ namespace PGDevOpsTips.Services.Common
             contents = contents.OrderByDescending(a => a.Published).ToList();
 
             // Remove drafts
+            // TODO filter out - any performance benefits?
             if (!includeDrafts)
             {
                 contents = contents.Where(a => a.Status.ToLowerInvariant() == "published").ToList();
@@ -168,6 +169,17 @@ namespace PGDevOpsTips.Services.Common
             var filter = $"{property} eq '{value}'";
             var contents = QueryContents(filter, false, default);
             return contents;
+        }
+
+        public Content GetContentByProperty(string type, string property, string value)
+        {
+            if (string.IsNullOrEmpty(property))
+            {
+                return null;
+            }
+            var filter = $"{property} eq '{value}' and Type eq '{type}'";
+            var content = QueryContents(filter, false, default).FirstOrDefault();
+            return content;
         }
 
         public List<string> GetWallpaperUrls()
