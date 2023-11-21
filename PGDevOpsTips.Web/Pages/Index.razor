@@ -1,16 +1,9 @@
 ﻿@page "/"
-@using PGDevOpsTips.Web.Models
-@using Microsoft.Extensions.Configuration
-@inject IConfiguration Configuration
 
-<div class="jumbotron jumbotron-home-header">
-    <div class="container">
-        <h1>Hi, I am @Configuration["Personalise:Name"]</h1>
-        <p>I am a lead software architect and an advocate of clean architecture/code</p>
-        <p class="d-none d-sm-block">@Configuration["Personalise:Slogan"]</p>
-        <p class="d-none d-sm-block">I am based in @Configuration["Personalise:Location"]</p>
-    </div>
-</div>
+<HeaderComponent H1="Hi, I am Peter Gregg"
+                 Line1="I am a lead software architect and an advocate of clean architecture/code."
+                 Line2="I lead the architecture development of Desktop, Web and Microsoft Azure applications."
+                 Line3="I am based in Liverpool, UK." />
 
 <div class="container-fluid list-item-background-1">
     <div class="container">
