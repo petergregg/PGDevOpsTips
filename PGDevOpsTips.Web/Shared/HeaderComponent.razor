@@ -1,0 +1,38 @@
+﻿<header class="jumbotron jumbotron-article-header">
+    <div class="container">
+        <h1>@H1</h1>
+        @if(Line1 != null)
+        {
+            <p>@((MarkupString)Line1)</p>
+        }
+        @if(Line2 != null)
+        {
+            <p class="d-none d-sm-block">@((MarkupString)Line2)</p>
+        }
+        @if(Tags != null)
+        {
+            <p><TagsList Categories="@Tags" /></p>   
+        }
+        @if(Line3 != null)
+        {
+            <p class="d-none d-sm-block">@((MarkupString)Line3)</p>
+        }
+    </div>
+</header>
+
+@code {
+    [Parameter]
+    public string H1 { get; set; }
+
+    [Parameter]
+    public string Line1 { get; set; }
+
+    [Parameter]
+    public string Line2 { get; set; }  
+
+    [Parameter]
+    public string Line3 { get; set; } 
+
+    [Parameter]
+    public string Tags {get; set; }     
+}

@@ -1,0 +1,25 @@
+﻿@foreach (var tag in Tags)
+{
+    <span class="badge badge-primary"><a href="/tags/@tag">#@tag</a> </span>
+}
+
+@code {
+    [Parameter]
+    public string Categories { get; set; }
+
+    [Parameter]
+    public string TagCss { get; set; }
+
+    private List<string> Tags = new List<string>();
+
+    protected override void OnInitialized()
+    {
+        Categories = Categories.TrimEnd(',');
+        var cats = Categories.Split(',');
+        foreach (var cat in cats)
+        {
+            Tags.Add(cat);
+        }
+        Tags.Sort();
+    }
+}
