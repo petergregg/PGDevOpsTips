@@ -171,14 +171,14 @@ namespace PGDevOpsTips.Services.Common
             return contents;
         }
 
-        public Content GetContentByProperty(string type, string property, string value)
+        public Content GetContentByProperty(string type, string property, string value, bool includeDrafts)
         {
             if (string.IsNullOrEmpty(property))
             {
                 return null;
             }
             var filter = $"{property} eq '{value}' and Type eq '{type}'";
-            var content = QueryContents(filter, false, default).FirstOrDefault();
+            var content = QueryContents(filter, includeDrafts, default).FirstOrDefault();
             return content;
         }
 

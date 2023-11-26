@@ -88,8 +88,9 @@ namespace PGDevOpsTips.Domain.Interfaces
         /// <param name="type">The Content Type to match the ContentEntity on.</param>
         /// <param name="property">The property (key) to match the ContentEntity on.</param>
         /// <param name="value">The value to match the ContentEntity on.</param>
+        /// <param name="includeDrafts">If true only content where Status=Published. If false, everything is returned.</param>
         /// <returns></returns>
-        Content GetContentByProperty(string type, string property, string value);
+        Content GetContentByProperty(string type, string property, string value, bool includeDrafts);
 
         /// <summary>
         /// Returns list of urls for each blob in wallpapers container

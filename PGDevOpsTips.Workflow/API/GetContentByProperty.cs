@@ -5,6 +5,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using PGDevOpsTips.Domain.Interfaces;
+using System;
 
 namespace PGDevOpsTips.Workflow.API
 {
@@ -27,13 +28,15 @@ namespace PGDevOpsTips.Workflow.API
             string type = req.Query["type"];
             string property = req.Query["property"];
             string value = req.Query["value"];
+            string drafts = req.Query["drafts"];
+            var includeDrafts = Convert.ToBoolean(drafts);
 
             if (type == null || property == null || value == null)
             {
                 return new OkObjectResult("Pass a type, property or value into the query string");
             }
 
-            var content = _storageService.GetContentByProperty(type, property, value);
+            var content = _storageService.GetContentByProperty(type, property, value, includeDrafts);
 
             if (content == null)
             {
