@@ -29,18 +29,16 @@ namespace PGDevOpsTips.Workflow.API
 
             string type = req.Query["type"];
 
-            if (type == null)
+            var filter = default(string);
+            if (type != null)
             {
-                return new OkObjectResult("Pass a type into the query string");
+                filter = $"Type eq '{type}'";
             }
 
             string drafts = req.Query["drafts"];
             var includeDrafts = Convert.ToBoolean(drafts);
 
             List<Content> contents = new List<Content>();
-
-            var filter = $"Type eq '{type}'";
-
             contents = _storageService.QueryContents(filter, includeDrafts, default);
 
             return new OkObjectResult(contents);
