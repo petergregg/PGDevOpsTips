@@ -17,9 +17,11 @@ namespace PGDevOpsTips.Workflow.API
             _storageService = storageService;
         }
 
+        //TODO: Add not found
+
         [FunctionName("GetBlobContent")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "blobcontent")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "blobcontent")] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
