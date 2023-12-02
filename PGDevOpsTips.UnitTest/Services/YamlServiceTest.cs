@@ -1,6 +1,6 @@
 using Moq;
-using PGDevOpsTips.Web.Interfaces;
-using PGDevOpsTips.Web.Models;
+using PGDevOpsTips.Domain.Models;
+using PGDevOpsTips.Workflow.Interfaces;
 using Xunit;
 
 namespace PGDevOpsTips.UnitTest

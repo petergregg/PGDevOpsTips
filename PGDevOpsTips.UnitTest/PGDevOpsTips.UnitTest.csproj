@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PGDevOpsTips.Web\PGDevOpsTips.Web.csproj" />
+    <ProjectReference Include="..\PGDevOpsTips.Workflow\PGDevOpsTips.Workflow.csproj" />
   </ItemGroup>
 
 </Project>
