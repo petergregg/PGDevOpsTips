@@ -1,6 +1,6 @@
 ﻿/*!
  * PGDevOpsTips
- * Copyright 2022 Peter Gregg
+ * Copyright 2023 Peter Gregg
  * Licensed under the Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0)
 */
 html {
@@ -77,6 +77,10 @@ a {
 
     .navbar-toggler {
         display: none;
+    }
+
+    .jubotron{
+        padding: 2rem 1rem;
     }
 }
 

@@ -1,4 +1,4 @@
-﻿using PGDevOpsTips.Web.Models;
+﻿using PGDevOpsTips.Domain.Models;
 
 namespace PGDevOpsTips.Web.ViewModels
 {

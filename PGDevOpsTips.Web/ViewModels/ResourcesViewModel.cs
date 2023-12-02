@@ -1,4 +1,4 @@
-﻿using PGDevOpsTips.Web.Models;
+﻿using PGDevOpsTips.Domain.Models;
 using System.Collections.Generic;
 
 namespace PGDevOpsTips.Web.ViewModels

@@ -1,25 +1,15 @@
 ﻿@page "/articles"
-@page "/articles/drafts/{Drafts:bool?}"
-@using Models
 @using Microsoft.Extensions.Configuration
+@using PGDevOpsTips.Domain.Models;
 @using Services
 @using System.Threading
-@implements IDisposable
 @inject IConfiguration Configuration
-@inject ContentService ContentService
-@inject NavigationManager NavigationManager
+@inject RestContentService RestContentService
 
-
-<div class="jumbotron jumbotron-articles-header">
-    <div class="container">
-        <h1>Articles</h1>
-            <p>A place where I share topics in blog articles about technical things I have found useful and hope you will too. Everytime I learn something new, I will share it here.</p>
-            <p>All my articles are written on 
-            <a href="@Configuration["Content:GithubContentRepoArticles"]" target="_blank">
-                <i class="fab fa-github fa-lg" aria-hidden="true"></i> GitHub</a>. You can raise issues, create pull requests or even fork the content... its open source.</p>
-            <p>By default, you'll only see published articles, but you can <a href="/articles/drafts/true">enable drafts</a>.</p>
-    </div>
-</div>
+<HeaderComponent H1="Articles"
+                 Line1="A place where I share topics in blog articles about technical things I have found useful and hope you will too. Everytime I learn something new, I will share it here."
+                 Line2="All my articles are written on <a href='https://github.com/petergregg/Content/tree/main/Blog/Articles' target='_blank'><i class='fab fa-github fa-lg' aria-hidden='true'></i> GitHub</a>."
+                 Line3="You can raise issues, create pull requests or even fork the content... its open source." />
 
 @if (!articlesViewModel.Articles.Any())
 {
@@ -36,29 +26,26 @@ else
 
     var backgroundCount = 1;
 
-    foreach(var article in articlesViewModel.Articles)
+    @foreach (var article in articlesViewModel.Articles)
     {
         <div class="container-fluid list-item-background-@backgroundCount">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <h2><a href="/article/@article.WebPath.ToLower()" title="@article.Description" >@article.Title</a></h2>
+                        <h2><a href="/article/@article.WebPath.ToLower()" title="@article.Description">@article.Title</a></h2>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-8">
-                           <p>@article.Published.ToString("dd MMM yyyy")</p>
-                            <p><small>
-                            @foreach (var cat in article.Categories)
-                            {
-                               <span><a href="/tags/@cat.ToLower()">#@cat</a> </span>
-                            }
-                        </small></p>
+                        <p>@article.Published.ToString("dd MMM yyyy")</p>
+                        <p>
+                            <TagsList Categories="@article.Categories" />
+                        </p>
                         <p>@article.Description</p>
                         <p><a href="/article/@article.WebPath.ToLower()" title="@article.Description" class="btn btn-light">Read now <i class="fas fa-angle-double-right" aria-hidden="true"></i></a></p>
                     </div>
                     <div class="col-md-4 d-none d-lg-block">
-                         <img src="@article.Thumbnail" class="img-fluid list-item-thumbnail" alt="@article.Title">
+                        <img src="@article.Thumbnail" class="img-fluid list-item-thumbnail" alt="@article.Title">
                     </div>
                 </div>
             </div>
@@ -70,42 +57,65 @@ else
     }
 }
 
+<div class="comment-container">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                @* TODO: Underline drafts *@
+                <p>@articles.Count articles avaliable. By default, you'll only see published articles, but you can also <a href="/articles" @onclick=(EnableDrafts)>view drafts</a></p>
+                <p>
+                    <div class="btn-toolbar" role="toolbar" aria-label="Paging buttons">
+                        <div class="btn-group me-2" role="group" aria-label="First group">
+                            @for (int p = 1; p <= pages; p++) {
+                                var thisPage = p;
+                                <button class="btn btn-secondary me-3" @onclick="@(e => ChangePage(thisPage))">@p</button>
+                            }
+                        </div>
+                    </div>
+                </p>
+                <p>@currentPageNumber of @pages</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 @code {
 
-    [Parameter]
-    public bool Drafts { get; set; }
+    private List<Content> articles = new List<Content>();
 
-    ArticlesViewModel articlesViewModel;
-    List<Content> allArticles;
+    ArticlesViewModel articlesViewModel { get; set; } = new ArticlesViewModel();
 
-    private CancellationTokenSource cts = new();
+    private int articlesPerPage = 5;
+
+    private int currentPageNumber = 1;  
+
+    private int pages;
 
     protected override async Task OnInitializedAsync()
     {
-        articlesViewModel = new ArticlesViewModel();
-        articlesViewModel.Articles = new List<Models.Content>();
-        allArticles = await ContentService.GetContents(Configuration["Content:ArticlesContentsApiPath"], cts.Token);   
+        articlesViewModel.Articles = new List<Content>();
+        articles = await RestContentService.GetContentsList(Configuration["Content:ContentsListApiPath"] + "?type=article", default);
+        Setup();
+    }
+
+    private void Setup()
+    {
         
-        GetRouteValuesAndUpdateArticles();
-
-        NavigationManager.LocationChanged += HandleLocationChanged;
-    }
-     
-    void HandleLocationChanged(object sender, LocationChangedEventArgs e)
-    {
-        GetRouteValuesAndUpdateArticles();
-        StateHasChanged();
+        articlesViewModel.Articles = articles.Take(articlesPerPage).ToList();
+        var pagesDec = (double)articles.Count/(double)articlesPerPage;
+        pages = Convert.ToInt16(Math.Ceiling(pagesDec));
+        currentPageNumber = 1;
     }
 
-    void GetRouteValuesAndUpdateArticles()
+    private void ChangePage(int page)
     {
-        articlesViewModel.Articles = Drafts ? allArticles.OrderByDescending(d => d.Published).ToList() : allArticles.Where(o => o.Status == ContentStatus.Published).OrderByDescending(d => d.Published).ToList();
+        currentPageNumber = page;
+        articlesViewModel.Articles = articles.Skip((page-1)*articlesPerPage).Take(articlesPerPage).ToList();
     }
 
-    public void Dispose()
+    private async Task EnableDrafts()
     {
-        NavigationManager.LocationChanged -= HandleLocationChanged;
-        cts.Cancel();
-        cts.Dispose();
+        articles = await RestContentService.GetContentsList(Configuration["Content:ContentsListApiPath"] + "?type=article&drafts=true", default);
+        Setup();
     }
 }

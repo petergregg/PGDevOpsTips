@@ -1,58 +1,35 @@
 ﻿@page "/article/{ArticleWebPath}"
 @using Microsoft.Extensions.Configuration
-@using Services
-@using PGDevOpsTips.Web.Models
+@using PGDevOpsTips.Web.Services;
+@using PGDevOpsTips.Domain.Models
 @using System.Threading
-@implements IDisposable
 @inject IConfiguration Configuration
-@inject ContentService ContentService
+@inject RestContentService RestContentService
 
-<style>
-    body {
-        background-color: white;
-    }
-</style>
-
-@if(loading)
+@if (loading)
 {
     <div class="container content-container">
-         <div class="row">
+        <div class="row">
             <div class="col-md-12">
                 <p><em>Loading</em></p>
             </div>
         </div>
     </div>
 }
-else if (articleViewModel.Article == null || html == null)
-{
-    <div class="container content-container">
-         <div class="row">
-            <div class="col-md-12">
-                <p>The article you have tried to load doesn't exist, check out my other <a href="/articles">Articles</a></p>
-            </div>
-        </div>
-    </div>
-}
 else
 {
-    <div class="jumbotron jumbotron-article-header">
-        <div class="container">
-            <h1>@articleViewModel.Article.Title</h1>
-            <p>@articleViewModel.Article.Description</p>
-            <p>
-                @foreach (var cat in articleViewModel.Article.Categories)
-                {
-                    <span class="badge badge-primary"><a href="/tags/@cat.ToLower()">#@cat</a> </span>
-                }
-            </p>
-            <p><small>@articleViewModel.Article.Published.ToString("dddd dd MMM yyyy")</small></p>
-            <p><small>This article was written on <a href=@($"{@Configuration["Content:GitHubContentRepo"]}{@articleViewModel.Article.GitHubPath}") target="_blank">
-                <i class="fab fa-github fa-lg" aria-hidden="true"></i> GitHub</a>. You can raise issues, create pull requests or even fork the content... its open source</small></p>
-        </div>
-    </div>
+    <HeaderComponent H1=@articleViewModel.Article.Title
+                     Line1=@articleViewModel.Article.Published.ToLongDateString()
+                     Line2=@articleViewModel.Article.Description
+                     Line3=@articleGitHubUrlText
+                     Tags=@articleViewModel.Article.Categories />
 
-    <div class="container content-container">
-        @((MarkupString)@html)
+    <div class="content-container">
+        <div class="container">
+            @((MarkupString)articleContents)
+        </div>
+
+    
     </div>
 
     <div class="container-fluid">
@@ -70,7 +47,7 @@ else
             <div class="row">
                 <div class="col-md-12">
                     <h2>Got a comment?</h2>
-                    <p>All my articles are written and managed as Markdown files on <a href=@($"{@Configuration["Content:GitHubContentRepo"]}{@articleViewModel.Article.GitHubPath}") target="_blank"><i class="fab fa-github fa-lg" aria-hidden="true"></i> GitHub</a>.</p>    
+                    <p>All my articles are written and managed as Markdown files on <a href=@($"{@Configuration["Content:GitHubContentRepo"]}{@articleViewModel.Article.GitHubUrl}") target="_blank"><i class="fab fa-github fa-lg" aria-hidden="true"></i> GitHub</a>.</p>
                     <p>Please add an issue or submit a pull request if something is not right on this article or you have a comment.</p>
                     <p>If you'd like to simply say "thanks", then please send me a <a href="@Configuration["Personalise:TwitterUrl"]" target="_blank"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a> so the rest of Twitter can see how awesome my work is.</p>
                 </div>
@@ -84,32 +61,35 @@ else
     [Parameter]
     public string ArticleWebPath { get; set; }
 
-    private string html;
+    private string articleContents;
 
     private bool loading;
 
-    ArticleViewModel articleViewModel { get; set; } = new ArticleViewModel();
+    private string articleGitHubUrlText;
 
-    private CancellationTokenSource cts = new();
+    ArticleViewModel articleViewModel { get; set; } = new ArticleViewModel();
 
     protected override async Task OnInitializedAsync()
     {
-        articleViewModel.Article = new Models.Content();
-        articleViewModel.Article.Categories = new List<string>();
-        
         loading = true;
-        articleViewModel.Article = await ContentService.GetContent(Configuration["Content:ArticlesContentsApiPath"], ArticleWebPath, cts.Token);     
-        loading = false;
 
-        if (articleViewModel.Article != null)
+        articleViewModel.Article = new Content();
+        articleViewModel.Article = await RestContentService.GetContent(Configuration["Content:ContentsListApiPath"] + "/content?type=article&property=WebPath&value=" + ArticleWebPath + "&drafts=true", default);
+        if (articleViewModel.Article == default)
         {
-            html = articleViewModel.Article.Html;
+            throw new NullReferenceException($"No article with WebPath {ArticleWebPath}");
         }
-    }
 
-    public void Dispose()
-    {
-        cts.Cancel();
-        cts.Dispose();
+        articleContents = await RestContentService.GetBlobContent(Configuration["Content:ContentApiPath"] + "?blobname=" + articleViewModel.Article.HtmlBlobFileName, default);
+
+        //Remove h1 if the article starts with it. This is because the h1 is in the header so it will be duplicated
+        if (articleContents.ToLowerInvariant().StartsWith("<h1"))
+        {
+            articleContents = articleContents.Substring(articleContents.ToLowerInvariant().IndexOf("</h1>"));
+        }
+
+        articleGitHubUrlText = $"This article is published at <a href='{articleViewModel.Article.GitHubUrl}' target='_blank' ><i class='fab fa-github fa-lg' aria-hidden='true'></i> GitHub</a>.You can raise issues, create pull requests or even fork the content...its open source.";
+
+        loading = false;
     }
 }

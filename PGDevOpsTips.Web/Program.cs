@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using PGDevOpsTips.Web.Interfaces;
 using PGDevOpsTips.Web.Services;
 using System;
 using System.Net.Http;
@@ -25,16 +24,9 @@ namespace PGDevOpsTips.Web
         {
             services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(hostEnvironment.BaseAddress) });
 
-            services.AddSingleton<IMarkdownService, MarkdownService>();
-            services.AddSingleton<IYamlService, YamlService>();
-
-            services.AddHttpClient<ContentService>("github", client =>
+            services.AddHttpClient<RestContentService>("contentapi", client =>
             {
-                client.BaseAddress = new Uri(configuration["GitHubAPI"]);
-                // Github API versioning
-                client.DefaultRequestHeaders.Add("Accept", "application/vnd.github.v3+json");
-                // Github requires a user-agent
-                client.DefaultRequestHeaders.Add("User-Agent", "PGDevOpsTips.Web");
+                client.BaseAddress = new Uri(configuration["ContentAPI"]);
             });
         }
     }

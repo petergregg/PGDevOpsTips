@@ -8,9 +8,15 @@
         margin-bottom: 10px;
     }
 
+.comment-container {
+    margin-top: 0;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
 .content-container {
-    margin-top: 10px;
-    margin-bottom: 10px;
+    padding-top: 20px;
+    padding-bottom: 20px;
     background-color: white;
     color: #24292e;
 }

@@ -1,17 +1,15 @@
 ﻿@page "/tags/{tagName}"
-@using Models
 @using Microsoft.Extensions.Configuration
+@using PGDevOpsTips.Domain.Models;
 @using Services
 @using System.Threading
 @inject IConfiguration Configuration
-@inject ContentService ContentService
-@inject NavigationManager NavigationManager
-
+@inject RestContentService RestContentService
 
 @if (!tagViewModel.Contents.Any())
 {
     <div class="container">
-         <div class="row">
+        <div class="row">
             <div class="col-md-12">
                 <p><em>Loading...</em></p>
             </div>
@@ -20,16 +18,13 @@
 }
 else
 {
-    <div class="jumbotron jumbotron-tags-header">
-        <div class="container">
-            <h1>@tagViewModel.Tag</h1>
-            <p>Everything I have about @tagViewModel.Tag</p>
-        </div>
-    </div>
+
+    <HeaderComponent H1="Tags"
+                     Line1=@($"Everything I have about {tagViewModel.Tag}") />
 
     var backgroundCount = 1;
-    
-    foreach(var content in tagViewModel.Contents)
+
+    @foreach (var content in tagViewModel.Contents)
     {
         <div class="container-fluid list-item-background-@backgroundCount">
             <div class="container">
@@ -40,18 +35,16 @@ else
                 </div>
                 <div class="row">
                     <div class="col-md-8">
-                           <p>@content.Published.ToString("dd MMM yyyy")</p>
-                            <p><small>
-                            @foreach (var cat in content.Categories)
-                            {
-                               <span><a href="/tags/@cat.ToString()">#@cat</a> </span>
-                            }
-                        </small></p>
+                        <p>@content.Published.ToString("dd MMM yyyy")</p>
+                        <p>
+                            @* TODO: Fix selection when clicking in this page *@
+                            <TagsList Categories="@content.Categories" />
+                        </p>
                         <p>@content.Description</p>
                         <p><a href="/@content.Type.ToString()/@content.WebPath.ToLower()" title="@content.Description" class="btn btn-light">Read now <i class="fas fa-angle-double-right" aria-hidden="true"></i></a></p>
                     </div>
-                    <div class="col-md-4 d-none d-sm-block">
-                         <img src="@content.Thumbnail" class="img-fluid list-item-thumbnail" alt="@content.Title">
+                    <div class="col-md-4 d-none d-lg-block">
+                        <img src="@content.Thumbnail" class="img-fluid list-item-thumbnail" alt="@content.Title">
                     </div>
                 </div>
             </div>
@@ -68,40 +61,44 @@ else
     [Parameter]
     public string TagName { get; set; }
 
-    private CancellationTokenSource cts = new();
+    private List<Content> tags = new List<Content>();
 
-    TagViewModel tagViewModel;
+    private TagViewModel tagViewModel { get; set; } = new TagViewModel();
+
+    private int tagsPerPage = 5;
+
+    private int currentPageNumber = 1;
+
+    private int pages;
 
     protected override async Task OnInitializedAsync()
     {
-        tagViewModel = new TagViewModel();
-        tagViewModel.Contents = new List<Content>();       
-        
-        await GetRouteValuesAndUpdateTaggedContents(cts.Token);
-
-        NavigationManager.LocationChanged += HandleLocationChanged;
-    }
-
-    void HandleLocationChanged(object sender, LocationChangedEventArgs e)
-    {
-        base.InvokeAsync(async () =>
-        {
-            await GetRouteValuesAndUpdateTaggedContents(cts.Token);
-            StateHasChanged();
-        });
-
-    }
-
-    async Task GetRouteValuesAndUpdateTaggedContents(CancellationToken cts)
-    {
         tagViewModel.Tag = TagName;
-        tagViewModel.Contents = await ContentService.GetContentsByTag(Configuration["Content:BlogContentsApiPath"], TagName, cts);
+        tagViewModel.Contents = new List<Content>();
+        tags = await RestContentService.GetContentsList(Configuration["Content:ContentsListApiPath"], default);
+        tags = tags.Where(a => a.Categories.ToLowerInvariant().Contains(TagName)).ToList();
+        Setup();
     }
 
-    public void Dispose()
+    private void Setup()
     {
-        NavigationManager.LocationChanged -= HandleLocationChanged;
-        cts.Cancel();
-        cts.Dispose();
+
+        tagViewModel.Contents = tags.Take(tagsPerPage).ToList();
+        var pagesDec = (double)tags.Count / (double)tagsPerPage;
+        pages = Convert.ToInt16(Math.Ceiling(pagesDec));
+        currentPageNumber = 1;
+    }
+
+    private void ChangePage(int page)
+    {
+        currentPageNumber = page;
+        tagViewModel.Contents = tags.Skip((page - 1) * tagsPerPage).Take(tagsPerPage).ToList();
+    }
+
+    private async Task EnableDrafts()
+    {
+        tags = await RestContentService.GetContentsList(Configuration["Content:ContentsListApiPath"] + "?drafts=true", default);
+        tags = tags.Where(a => a.Categories.ToLowerInvariant().Contains(TagName)).ToList();
+        Setup();
     }
 }
