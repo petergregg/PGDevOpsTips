@@ -25,7 +25,7 @@ jobs:
       working-directory: Prerender/output/wwwroot
       run: |
         find . -name "*.html" | while read htmlFile; do
-            sed -i 's/<script>var Module; window.__wasmmodulecallback__(); delete window.__wasmmodulecallback__;<\/script>//g' $htmlFile
+            sed -i 's/<script>var Module; window.__wasmmodulecallback__(); delete window.__wasmmodulecallback__;<\/script><script src="_framework\/dotnet.6.0.25.0ibdzzkyii.js" defer="" integrity="sha256-1jUGCCSGH9JWhkqbHdQk8JBjBI8K\/VC63En5zlypVps=" crossorigin="anonymous"><\/script>//g' $htmlFile
         done
     
     # copy index.html to 404.html to serve the same file when a file is not found
