@@ -1,0 +1,21 @@
+name: Deploy to GitHub Pages
+env:
+    PUBLISH_DIR: Prerender/output/wwwroot
+
+on:
+  push:
+    branches: [ gh-pages ]
+
+jobs:
+  deploy-to-github-pages:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Change base tag
+      working-directory: .
+      run: |
+        find . -name "*.html" | while read htmlFile; do
+            #sed -i 's/<base href="\/"/<base href="\/PGDevOpsTips\/"/g' $htmlFile
+            sed -i 's/<script type="text\/javascript">var Module; window.__wasmmodulecallback__(); delete window.__wasmmodulecallback__;<\/script><script src="_framework/dotnet.6.0.25.0ibdzzkyii.js" defer="" integrity="sha256-1jUGCCSGH9JWhkqbHdQk8JBjBI8K/VC63En5zlypVps=" crossorigin="anonymous"><\/script>//g' $htmlFile
+        done
