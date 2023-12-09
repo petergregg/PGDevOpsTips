@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     
     - name: Publish app
       run: dotnet publish PGDevOpsTips.Web/PGDevOpsTips.Web.csproj -c Release -o Prerender/output --nologo
@@ -36,6 +38,7 @@ jobs:
       id: sitemap
       uses: cicirello/generate-sitemap@v1
       with:
+        path-to-root: ./Prerender/output/wwwroot/
         base-url-path: https://www.pgdevopstips.co.uk/
     
     - name: Output stats
