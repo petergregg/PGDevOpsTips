@@ -32,6 +32,18 @@ jobs:
     - name: copy index.html to 404.html
       run: cp Prerender/output/wwwroot/index.html Prerender/output/wwwroot/404.html
 
+    - name: Generate the sitemap
+      id: sitemap
+      uses: cicirello/generate-sitemap@v1
+      with:
+        base-url-path: https://www.pgdevopstips.co.uk/
+    
+    - name: Output stats
+      run: |
+        echo "sitemap-path = ${{ steps.sitemap.outputs.sitemap-path }}"
+        echo "url-count = ${{ steps.sitemap.outputs.url-count }}"
+        echo "excluded-count = ${{ steps.sitemap.outputs.excluded-count }}"
+
     # Allow files and folders starting with an underscore
     - name: Add .nojekyll file
       run: touch Prerender/output/wwwroot/.nojekyll
