@@ -12,8 +12,14 @@
 
     private List<string> Tags = new List<string>();
 
-    protected override void OnInitialized()
+    protected override void OnParametersSet()
     {
+        Setup();
+    }
+
+    private void Setup()
+    {
+        Tags.Clear();
         Categories = Categories.TrimEnd(',');
         var cats = Categories.Split(',');
         foreach (var cat in cats)
