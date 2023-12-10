@@ -4,7 +4,7 @@ A Blazor Web Assembly app written in dotnet core 6.0 that can be used to create 
 
 My own personal app is published at [pgdevopstips.co.uk](https://www.pgdevopstips.co.uk) which is deployed from this code base.
 
-This project was inspired my Martin Kearn [blog and backend](https://github.com/martinkearn/MartinK-Me/) project.
+This project was inspired my Martin Kearn's personal [blog and backend project](https://github.com/martinkearn/MartinK-Me/).
 
 # Customisation
 
