@@ -71,7 +71,7 @@ else
 
     private int pages;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         tagViewModel.Tag = TagName;
         tagViewModel.Contents = new List<Content>();
