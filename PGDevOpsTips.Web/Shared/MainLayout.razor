@@ -9,7 +9,7 @@
 <footer class="footer container-fluid">
     <div class="container">
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-6">
                 <p>Get in touch...</p>
                 @if (!string.IsNullOrEmpty(Configuration["Personalise:YouTube"].ToString()))
                 {
@@ -52,7 +52,10 @@
                     <a href="@string.Format("mailto:{0}?Subject=Enquiry%20from%20{1}", Configuration["Personalise:Email"].ToString(), Configuration["Personalise:DomainName"].ToString())" target="_blank">
                             <i class="far fa-envelope fa-lg footer-icon" aria-hidden="true"></i>
                     </a>
-                }
+                }         
+            </div>
+            <div class="col-sm-6">
+                <a href="/cookie-policy" title="Cookie Policy">Cookie Policy</a>
             </div>
         </div>
     </div>
