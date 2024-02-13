@@ -18,6 +18,12 @@
 }
 else
 {
+    <PageTitle>@articleViewModel.Article.Title | Peter Gregg</PageTitle>
+
+    <HeadContent>
+        <meta name="description" content="@articleViewModel.Article.Description">
+    </HeadContent>
+
     <HeaderComponent H1=@articleViewModel.Article.Title
                      Line1=@articleViewModel.Article.Published.ToLongDateString()
                      Line2=@articleViewModel.Article.Description
