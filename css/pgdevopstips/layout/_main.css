@@ -1,0 +1,26 @@
+﻿.jumbotron {
+    color: #ffffff;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.4)), url('../../../images/computersourcecode.jpg');
+    background-position: center center;
+    margin-bottom: 0;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 0;
+}
+
+    .jumbotron h1 {
+        font-weight: 900;
+        font-size: 4rem;
+    }
+
+    .jumbotron p {
+        font-size: 1rem;
+        font-weight: 100;
+    }
+
+.badge {
+    border-radius: 3px;
+    font-weight: normal;
+    font-size: initial;
+}
+
