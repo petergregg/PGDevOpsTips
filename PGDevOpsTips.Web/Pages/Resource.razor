@@ -18,6 +18,12 @@
 }
 else
 {
+    <PageTitle>@resourceViewModel.Resource.Title | Peter Gregg</PageTitle>
+
+    <HeadContent>
+        <meta name="description" content="@resourceViewModel.Resource.Description">
+    </HeadContent>
+
     <HeaderComponent H1=@resourceViewModel.Resource.Title
                      Line1=@resourceViewModel.Resource.Published.ToLongDateString()
                      Line2=@resourceViewModel.Resource.Description
