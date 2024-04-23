@@ -13,43 +13,43 @@
                 <p>Get in touch...</p>
                 @if (!string.IsNullOrEmpty(Configuration["Personalise:YouTube"].ToString()))
                 {
-                    <a href="@Configuration["Personalise:YouTube"]" target="_blank">
+                    <a href="@Configuration["Personalise:YouTube"]" target="_blank" aria-label="View more PG DevOps Tips on YouTube">
                         <i class="fab fa-youtube fa-lg footer-icon" aria-hidden="true"></i>
                     </a>
                 }
                 @if (!string.IsNullOrEmpty(Configuration["Personalise:TwitterUrl"].ToString()))
                 {
-                    <a href="@Configuration["Personalise:TwitterUrl"]" target="_blank">
+                    <a href="@Configuration["Personalise:TwitterUrl"]" target="_blank" aria-label="Read more PG DevOps Tips on Twitter">
                         <i class="fab fa-twitter fa-lg footer-icon" aria-hidden="true"></i>
                     </a>
                 }
                 @if (!string.IsNullOrEmpty(Configuration["Personalise:LinkedInUrl"].ToString()))
                 {
-                    <a href="@Configuration["Personalise:LinkedInUrl"]" target="_blank">
+                    <a href="@Configuration["Personalise:LinkedInUrl"]" target="_blank" aria-label="Read more PG DevOps Tips on LinkedIn">
                         <i class="fab fa-linkedin fa-lg footer-icon" aria-hidden="true"></i>
                     </a>
                 }
                 @if (!string.IsNullOrEmpty(Configuration["Personalise:SkypeHandle"].ToString()))
-                {    
-                    <a href="@Configuration["Personalise:SkypeHandle"]" target="_blank">
+                {
+                    <a href="@Configuration["Personalise:SkypeHandle"]" target="_blank" aria-label="Read more PG DevOps Tips on Skype">
                         <i class="fab fa-skype fa-lg footer-icon" aria-hidden="true"></i>
                     </a>            
                 }
                 @if (!string.IsNullOrEmpty(Configuration["Personalise:GitHubUrl"].ToString()))
-                {               
-                    <a href="@Configuration["Personalise:GitHubUrl"]" target="_blank">
+                {
+                    <a href="@Configuration["Personalise:GitHubUrl"]" target="_blank" aria-label="Read more PG DevOps Tips on GitHub">
                         <i class="fab fa-github fa-lg footer-icon" aria-hidden="true"></i>
                     </a>
                 }
                 @if (!string.IsNullOrEmpty(Configuration["Personalise:StackOverflowUrl"].ToString()))
-                {                    
-                    <a href="@Configuration["Personalise:StackOverflowUrl"]" target="_blank">
+                {
+                    <a href="@Configuration["Personalise:StackOverflowUrl"]" target="_blank" aria-label="Read more PG DevOps Tips on Stack Overflow">
                         <i class="fab fa-stack-overflow fa-lg footer-icon" aria-hidden="true"></i>
                     </a>               
                 }
                 @if (!string.IsNullOrEmpty(Configuration["Personalise:Email"].ToString()))
-                {                 
-                    <a href="@string.Format("mailto:{0}?Subject=Enquiry%20from%20{1}", Configuration["Personalise:Email"].ToString(), Configuration["Personalise:DomainName"].ToString())" target="_blank">
+                {
+                    <a href="@string.Format("mailto:{0}?Subject=Enquiry%20from%20{1}", Configuration["Personalise:Email"].ToString(), Configuration["Personalise:DomainName"].ToString())" target="_blank" aria-label="Contact PG DevOps Tips via email">
                             <i class="far fa-envelope fa-lg footer-icon" aria-hidden="true"></i>
                     </a>
                 }         
