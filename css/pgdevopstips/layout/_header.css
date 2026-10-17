@@ -1,0 +1,23 @@
+﻿.jumbotron-home-header {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.4)), url('../../../images/computersourcecode.jpg');
+}
+
+.jumbotron-articles-header {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.4)), url('../../../images/computersourcecode.jpg');
+}
+
+.jumbotron-article-header {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.4)), url('../../../images/computersourcecode.jpg');
+}
+
+.jumbotron-resources-header {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.4)), url('../../../images/computersourcecode.jpg');
+}
+
+.jumbotron-resource-header {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.4)), url('../../../images/computersourcecode.jpg');
+}
+
+.jumbotron-tags-header {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.4)), url('../../../images/computersourcecode.jpg');
+}
