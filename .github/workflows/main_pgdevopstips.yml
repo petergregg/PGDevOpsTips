@@ -29,7 +29,7 @@ jobs:
         shell: bash
         run: |
           pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
-          dotnet build --configuration Release --output ./output
+          dotnet publish --configuration Release --output ./publish
           popd
 
       - name: 'Run Azure Functions Action'
@@ -38,5 +38,5 @@ jobs:
         with:
           app-name: 'pgdevopstips'
           slot-name: 'Production'
-          package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
+          package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/publish'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_5BE8E5A1640B4C05B907B30564B4738C }}
