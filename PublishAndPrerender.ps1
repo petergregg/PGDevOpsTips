@@ -1,14 +1,23 @@
-If(Test-Path .\Prerender\output)
-{
+if (Test-Path .\Prerender\output) {
     Remove-Item -Path .\Prerender\output -Recurse
 }
- 
+
 dotnet publish .\PGDevOpsTips.Web\PGDevOpsTips.Web.csproj -c Release -o Prerender/output --nologo
 Push-Location .\Prerender
 npx react-snap
-Get-ChildItem ".\output\wwwroot\*.html" -Recurse | ForEach-Object { 
-    $HtmlFileContent = (Get-Content -Path $_.FullName -Raw);
-    $HtmlFileContent = $HtmlFileContent.Replace('<script>var Module; window.__wasmmodulecallback__(); delete window.__wasmmodulecallback__;</script><script src="_framework/dotnet.6.0.25.fveiv4nhbd.js" defer="" integrity="sha256-1jUGCCSGH9JWhkqbHdQk8JBjBI8K/VC63En5zlypVps=" crossorigin="anonymous"></script>','')
-    Set-Content -Path $_.FullName -Value $HtmlFileContent
+
+$scriptWithCallback = '<script[^>]*>[^<]*__wasmmodulecallback__[^<]*</script>'
+$dotnetScript       = '<script[^>]*src=["'']?_framework/dotnet[^\s>"'']*["'']?[^>]*>\s*</script>'
+$utf8 = New-Object System.Text.UTF8Encoding $false
+
+Get-ChildItem ".\output\wwwroot\*.html" -Recurse | ForEach-Object {
+    $html = [System.IO.File]::ReadAllText($_.FullName)
+    $html = [regex]::Replace($html, $scriptWithCallback, '')
+    $html = [regex]::Replace($html, $dotnetScript, '')
+    [System.IO.File]::WriteAllText($_.FullName, $html, $utf8)
+
+    if ($html -match '__wasmmodulecallback__') {
+        Write-Warning "Loader snippet still present in $($_.FullName)"
+    }
 }
 Pop-Location
