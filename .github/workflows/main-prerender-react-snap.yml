@@ -22,12 +22,14 @@ jobs:
       working-directory: Prerender
       run: npx react-snap
 
-    # change base tag in all html files to include subfolder
-    - name: Change base tag
+    # react-snap saves the scripts Blazor injects at runtime. Remove them: Blazor adds both again
+    # when the page starts, using the correct file name for this build.
+    - name: Remove captured Blazor loader scripts
       working-directory: Prerender/output/wwwroot
       run: |
-        find . -name "*.html" | while read htmlFile; do
-            sed -i 's/<script>var Module; window.__wasmmodulecallback__(); delete window.__wasmmodulecallback__;<\/script><script src="_framework\/dotnet.js" defer="" integrity="sha256-pu7MO47B6So4jcW6iY2UI11lBZYz2EQnJKiYNsOpNJg=" crossorigin="anonymous"><\/script>//g' $htmlFile
+        find . -name "*.html" -print0 | while IFS= read -r -d '' htmlFile; do
+          perl -0777 -pi -e 's{<script[^>]*>[^<]*__wasmmodulecallback__[^<]*</script>}{}g' "$htmlFile"
+          perl -0777 -pi -e 's{<script[^>]*src=["\x27]?_framework/dotnet[^\s>"\x27]*["\x27]?[^>]*>\s*</script>}{}g' "$htmlFile"
         done
     
     # copy index.html to 404.html to serve the same file when a file is not found
